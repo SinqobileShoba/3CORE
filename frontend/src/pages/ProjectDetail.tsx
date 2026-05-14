@@ -73,9 +73,12 @@ export const ProjectDetail: React.FC = () => {
 
   const daysRemaining = useMemo(() => {
     if (tasks.length === 0) return 0;
-    const taskDates = tasks.map(t => new Date(t.planned_finish).getTime());
+    const taskDates = tasks
+      .map(t => new Date(t.planned_finish).getTime())
+      .filter(t => !isNaN(t));
+    if (taskDates.length === 0) return 0;
     const latestTaskDate = Math.max(...taskDates);
-    const today = new Date('2026-03-02').getTime();
+    const today = Date.now();
     return Math.max(0, Math.floor((latestTaskDate - today) / (1000 * 3600 * 24)));
   }, [tasks]);
 
@@ -123,10 +126,13 @@ export const ProjectDetail: React.FC = () => {
     if (id) fetchAllData(Number(id));
   };
 
-  const handleDownloadFile = async (fileId: number, fileName: string) => {
+  const handleDownloadFile = async (fileId: number, _fileName: string) => {
     try {
       const res = await api.get(`tasks/output/${fileId}/blob/`);
-      alert(`Initiating secure download for: ${fileName}`);
+      const signedUrl = res.data?.signed_url;
+      if (signedUrl) {
+        window.open(signedUrl, '_blank', 'noopener');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -202,7 +208,7 @@ export const ProjectDetail: React.FC = () => {
         <KPICard label="Contract Budget" value={`R ${metrics?.total_budget?.toLocaleString() || 0}`} icon={<Briefcase className="w-4 h-4 text-lime-400" />} color="border-lime-500/30" />
         <KPICard label="Actual Costs" value={`R ${metrics?.spent?.toLocaleString() || 0}`} icon={<TrendingUp className="w-4 h-4 text-emerald-400" />} color="border-emerald-500/30" />
         <KPICard label="Budget Used" value={`${metrics?.budget_used_pct || 0}%`} icon={<Zap className="w-4 h-4 text-amber-400" />} color="border-amber-500/30" />
-        <KPICard label="Remaining Budget" value={`R ${(metrics?.total_budget - metrics?.spent).toLocaleString()}`} icon={<Clock className="w-4 h-4 text-rose-400" />} color="border-rose-500/30" />
+        <KPICard label="Remaining Budget" value={`R ${(((metrics?.total_budget ?? 0) - (metrics?.spent ?? 0))).toLocaleString()}`} icon={<Clock className="w-4 h-4 text-rose-400" />} color="border-rose-500/30" />
       </div>
 
       {/* ANALYTICS */}

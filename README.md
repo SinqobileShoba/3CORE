@@ -1,6 +1,6 @@
-# Strat Edge Portal Pro v2.0
+# 3CORE Portal v2.0
 
-Modernized, decoupled version of the Strat Edge Project Portal.
+Modernized, decoupled version of the 3CORE Project Portal.
 
 ## Architecture
 - **Backend**: FastAPI, SQLAlchemy, Pydantic, JWT Auth.

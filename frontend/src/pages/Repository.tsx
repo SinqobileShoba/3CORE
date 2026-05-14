@@ -46,7 +46,16 @@ export const Repository: React.FC = () => {
   const [activeMenuId, setActiveMenuId] = useState<{ type: 'del' | 'kb', id: number, name: string } | null>(null);
 
   // --- PREVIEW STATE ---
-  const [preview, setPreview] = useState<{ isOpen: boolean; name: string; url: string }>({
+  // We track the source (deliverable vs personal file) + id so that the
+  // preview modal's Download button can request a *fresh* attachment-disposition
+  // URL instead of reusing the inline preview URL.
+  const [preview, setPreview] = useState<{
+    isOpen: boolean;
+    name: string;
+    url: string;
+    type?: 'del' | 'kb';
+    id?: number;
+  }>({
     isOpen: false,
     name: '',
     url: ''
@@ -157,7 +166,7 @@ export const Repository: React.FC = () => {
       const endpoint = type === 'del' ? `/tasks/output/${id}/blob/` : `/repository/files/${id}/blob/`;
       const res = await api.get(`${endpoint}?inline=true`);
       if (res.data.signed_url) {
-        setPreview({ isOpen: true, name, url: res.data.signed_url });
+        setPreview({ isOpen: true, name, url: res.data.signed_url, type, id });
       }
     } catch (err) {
       console.error(err);
@@ -424,7 +433,13 @@ export const Repository: React.FC = () => {
         )}
       </div>
 
-      <DocumentPreview isOpen={preview.isOpen} onClose={() => setPreview({ ...preview, isOpen: false })} fileName={preview.name} fileUrl={preview.url} />
+      <DocumentPreview
+        isOpen={preview.isOpen}
+        onClose={() => setPreview({ ...preview, isOpen: false })}
+        fileName={preview.name}
+        fileUrl={preview.url}
+        onDownload={preview.type && preview.id ? () => handleDownload(preview.type!, preview.id!) : undefined}
+      />
 
       {/* --- CENTRALIZED MOBILE ACTION SHEET --- */}
       {activeMenuId && (

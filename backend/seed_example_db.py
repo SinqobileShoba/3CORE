@@ -1,29 +1,41 @@
+import os
+import sys
+
 from app.models.database import Base, engine, User, Project, Task, Expenditure, Risk, DailyProgress, SessionLocal
 from app.core.security import get_password_hash
 import datetime
 
 def seed_db():
+    admin_password = os.getenv("ADMIN_INITIAL_PASSWORD")
+    pm_password = os.getenv("SEED_PM_PASSWORD")
+    if not admin_password or not pm_password:
+        print(
+            "ERROR: ADMIN_INITIAL_PASSWORD and SEED_PM_PASSWORD env vars are required to seed example users.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     print("Seeding database with working project example...")
     db = SessionLocal()
-    
+
     # 1. Create Users
     admin = db.query(User).filter(User.username == "admin").first()
     if not admin:
         admin = User(
             username="admin",
             full_name="System Administrator",
-            email="admin@stratedge.com",
-            password_hash=get_password_hash("admin123"),
+            email=os.getenv("ADMIN_EMAIL", "admin@3core.com"),
+            password_hash=get_password_hash(admin_password),
             role="admin",
             status="active"
         )
         db.add(admin)
-    
+
     pm = User(
         username="ayanda",
         full_name="Ayanda Phaketsi",
-        email="ayanda@stratedge.com",
-        password_hash=get_password_hash("pass123"),
+        email="ayanda@3core.com",
+        password_hash=get_password_hash(pm_password),
         role="pm",
         status="active"
     )
@@ -33,7 +45,7 @@ def seed_db():
     
     # 2. Create Project
     project = Project(
-        project_name="Strat Edge Bridge Construction",
+        project_name="3CORE Bridge Construction",
         project_number="SEB-2026-001",
         client="City of Johannesburg",
         pm_user_id=pm.user_id,

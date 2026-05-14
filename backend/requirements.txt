@@ -6,7 +6,7 @@ passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
 python-dotenv
-google-cloud-storage
+boto3
 pydantic[email]
 pandas
 openpyxl

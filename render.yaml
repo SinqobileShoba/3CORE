@@ -1,7 +1,7 @@
 services:
   # 1. Backend (FastAPI Web Service)
   - type: web
-    name: strat-edge-api
+    name: 3core-api
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -12,18 +12,28 @@ services:
         sync: false
       - key: SECRET_KEY
         generateValue: true
-      - key: GCP_PROJECT_ID
-        value: custom-mix-428318-h3
-      - key: GCP_BUCKET_NAME
-        value: stratedgestore
-      - key: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/secrets/gcp-credentials.json
+      - key: B2_ENDPOINT_URL
+        value: https://s3.us-east-005.backblazeb2.com
+      - key: B2_BUCKET_NAME
+        value: 3core-storage
+      - key: B2_REGION
+        value: us-east-005
+      - key: B2_ACCESS_KEY_ID
+        sync: false
+      - key: B2_SECRET_ACCESS_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://3core-portal.onrender.com
+      - key: ADMIN_INITIAL_PASSWORD
+        sync: false
+      - key: SEED_PM_PASSWORD
+        sync: false
 
   # 2. Frontend (React Static Site)
   # We use 'runtime: static' within a web service or 'staticSites'
   # If 'staticSites' failed previously, we use 'type: web' + 'runtime: static'
   - type: web
-    name: strat-edge-portal
+    name: 3core-portal
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -34,4 +44,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://strat-edge-api.onrender.com
+        value: https://3core-api.onrender.com

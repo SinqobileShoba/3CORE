@@ -51,8 +51,15 @@ export const Overview: React.FC = () => {
   // Calculate high-level stats
   const totalBudget = projects.reduce((sum, p) => sum + (p.total_budget || 0), 0);
   const totalSpent = projects.reduce((sum, p) => sum + (p.spent || 0), 0);
-  const avgCompletion = projects.length > 0 
+  const avgCompletion = projects.length > 0
     ? Math.round(projects.reduce((sum, p) => sum + (p.percent_complete || 0), 0) / projects.length)
+    : 0;
+  // Overall Health: % of projects whose budget AND schedule are both Green.
+  const overallHealth = projects.length > 0
+    ? Math.round(
+        (projects.filter(p => p.health === 'Green' && p.schedule_health === 'Green').length /
+          projects.length) * 100 * 10
+      ) / 10
     : 0;
 
   return (
@@ -83,7 +90,7 @@ export const Overview: React.FC = () => {
         <StatCard label="Total Projects" value={projects.length.toString()} icon={<LayoutDashboard />} />
         <StatCard label="Portfolio Value" value={`R ${(totalBudget/1000000).toFixed(1)}M`} icon={<TrendingUp />} />
         <StatCard label="Avg. Completion" value={`${avgCompletion}%`} icon={<Target />} />
-        <StatCard label="Overall Health" value="98.2%" icon={<CheckCircle2 />} />
+        <StatCard label="Overall Health" value={`${overallHealth}%`} icon={<CheckCircle2 />} />
       </div>
 
       <div className="flex items-center justify-between mb-8">

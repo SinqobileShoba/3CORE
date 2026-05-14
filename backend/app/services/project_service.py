@@ -307,9 +307,17 @@ class ProjectService:
         metrics = ProjectService.get_project_metrics(db, project_id)
         if not metrics:
             return "Project data not available."
-            
+
         project_name = metrics['project_name']
-        status = metrics.get('actual_status', 'Active')
+        # Derive a human status from health flags instead of a never-populated key.
+        schedule_health = metrics.get('schedule_health', 'Green')
+        budget_health = metrics.get('health', 'Green')
+        if schedule_health == 'Red' or budget_health == 'Red':
+            status = 'At Risk'
+        elif budget_health == 'Yellow':
+            status = 'Watch'
+        else:
+            status = 'On Track'
         pct = metrics['percent_complete']
         
         # Calculate forecast from spending and completion

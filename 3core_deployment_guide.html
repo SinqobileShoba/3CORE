@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>3CORE Portal — Deployment Guide</title>
+<style>
+  @page {
+    size: A4;
+    margin: 22mm 18mm;
+  }
+
+  :root {
+    --ink: #0f172a;
+    --muted: #475569;
+    --soft: #64748b;
+    --line: #e2e8f0;
+    --accent: #0c4a6e;
+    --accent-2: #0ea5e9;
+    --warn-bg: #fef3c7;
+    --warn-bd: #f59e0b;
+    --ok-bg: #ecfdf5;
+    --ok-bd: #10b981;
+    --code-bg: #0f172a;
+    --code-fg: #e2e8f0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    font-family: "Helvetica Neue", "Inter", "Segoe UI", Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.55;
+    color: var(--ink);
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* COVER */
+  .cover {
+    page-break-after: always;
+    height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cover .brand {
+    font-size: 10pt;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .cover h1 {
+    font-size: 56pt;
+    line-height: 0.95;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+  .cover h1 span { color: var(--accent-2); }
+  .cover .sub {
+    font-size: 14pt;
+    color: var(--muted);
+    margin-top: 18pt;
+    max-width: 130mm;
+    line-height: 1.45;
+  }
+  .cover .meta {
+    font-size: 9pt;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    border-top: 2px solid var(--ink);
+    padding-top: 10pt;
+  }
+  .cover .meta strong { color: var(--ink); }
+
+  /* TOC */
+  .toc {
+    page-break-after: always;
+  }
+  .toc h2 {
+    font-size: 22pt;
+    margin: 0 0 18pt 0;
+    letter-spacing: -0.01em;
+  }
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: section;
+  }
+  .toc li {
+    counter-increment: section;
+    border-bottom: 1px dotted var(--line);
+    padding: 8pt 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 12pt;
+  }
+  .toc li::before {
+    content: counter(section, decimal-leading-zero);
+    color: var(--accent-2);
+    font-weight: 700;
+    margin-right: 14pt;
+    font-variant-numeric: tabular-nums;
+  }
+  .toc li .name { flex: 1; }
+  .toc li .pg { color: var(--soft); font-variant-numeric: tabular-nums; font-size: 10pt; }
+
+  /* CONTENT */
+  section.part { page-break-before: always; }
+  .part-tag {
+    font-size: 9pt;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 700;
+    margin-bottom: 4pt;
+  }
+  h1.part-title {
+    font-size: 30pt;
+    margin: 0 0 8pt 0;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .lede {
+    font-size: 12pt;
+    color: var(--muted);
+    margin: 0 0 20pt 0;
+    max-width: 150mm;
+  }
+
+  h2 {
+    font-size: 16pt;
+    margin: 22pt 0 6pt;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  h3 {
+    font-size: 12pt;
+    margin: 16pt 0 4pt;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  p { margin: 6pt 0; }
+  ul, ol { margin: 6pt 0 10pt; padding-left: 20pt; }
+  ul li, ol li { margin: 4pt 0; }
+  strong { color: var(--ink); }
+
+  /* CODE / VALUES */
+  code, .code {
+    font-family: "SFMono-Regular", "Menlo", "Consolas", "Courier New", monospace;
+    background: #f1f5f9;
+    color: #0f172a;
+    padding: 1pt 5pt;
+    border-radius: 3pt;
+    font-size: 9.5pt;
+    border: 1px solid #e2e8f0;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 10pt 14pt;
+    border-radius: 4pt;
+    font-family: "SFMono-Regular", "Menlo", "Consolas", "Courier New", monospace;
+    font-size: 9pt;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 8pt 0;
+  }
+
+  /* CALLOUTS */
+  .callout {
+    border-left: 4px solid var(--accent-2);
+    background: #f0f9ff;
+    padding: 10pt 14pt;
+    margin: 12pt 0;
+    border-radius: 0 4pt 4pt 0;
+    font-size: 10.5pt;
+  }
+  .callout.warn {
+    border-color: var(--warn-bd);
+    background: var(--warn-bg);
+  }
+  .callout.ok {
+    border-color: var(--ok-bd);
+    background: var(--ok-bg);
+  }
+  .callout strong { display: block; text-transform: uppercase; letter-spacing: 0.18em; font-size: 9pt; margin-bottom: 4pt; }
+
+  /* CHECKLIST */
+  .checklist {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 4pt;
+    padding: 12pt 16pt;
+    margin: 12pt 0;
+  }
+  .checklist h4 {
+    margin: 0 0 6pt;
+    font-size: 10pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .checklist ul { list-style: none; padding-left: 0; margin: 0; }
+  .checklist li { padding: 3pt 0 3pt 22pt; position: relative; font-size: 10.5pt; }
+  .checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--ok-bd);
+    font-weight: 700;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0;
+    font-size: 10pt;
+  }
+  th, td {
+    text-align: left;
+    padding: 8pt 10pt;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent);
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 9pt;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+  td.var { font-family: "SFMono-Regular", "Menlo", "Consolas", monospace; font-size: 9.5pt; color: var(--accent); white-space: nowrap; }
+
+  .step {
+    border-left: 3px solid var(--line);
+    padding-left: 14pt;
+    margin: 14pt 0;
+  }
+  .step-num {
+    font-size: 9pt;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    font-weight: 700;
+    margin-bottom: 2pt;
+  }
+  .step h3 { margin-top: 0; }
+
+  hr.rule { border: none; border-top: 2px solid var(--ink); margin: 20pt 0; }
+
+  .small { font-size: 9.5pt; color: var(--muted); }
+  .kbd { font-family: monospace; font-size: 9.5pt; background: #fff; border: 1px solid var(--line); padding: 1pt 6pt; border-radius: 3pt; box-shadow: 0 1px 0 var(--line); }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div>
+    <div class="brand">3CORE Portal</div>
+    <h1>Deployment<br><span>Guide</span></h1>
+    <p class="sub">
+      A step-by-step walkthrough for putting 3CORE Portal online from scratch.
+      No prior cloud experience required. Around one hour of work, end to end.
+    </p>
+  </div>
+  <div class="meta">
+    <strong>Version 1.0</strong> &nbsp;&nbsp;•&nbsp;&nbsp; For non-technical operators &nbsp;&nbsp;•&nbsp;&nbsp; Free-tier hosting on Render
+  </div>
+</div>
+
+<!-- ===== TOC ===== -->
+<div class="toc">
+  <h2>What's inside</h2>
+  <ol>
+    <li><span class="name">Before you start — accounts and prep</span><span class="pg">3</span></li>
+    <li><span class="name">Backblaze B2 — set up cloud file storage</span><span class="pg">4</span></li>
+    <li><span class="name">Neon — set up the database</span><span class="pg">8</span></li>
+    <li><span class="name">Render — host the backend and frontend</span><span class="pg">10</span></li>
+    <li><span class="name">First login and basic admin tasks</span><span class="pg">15</span></li>
+    <li><span class="name">Troubleshooting common issues</span><span class="pg">16</span></li>
+    <li><span class="name">Glossary — quick definitions</span><span class="pg">18</span></li>
+  </ol>
+  <div class="callout">
+    <strong>How to use this guide</strong>
+    Work through the parts in order. Keep a notepad open beside the guide — you will copy several values into it as you go, and you will paste those values into Render at the end. The notepad is the bridge between the three services.
+  </div>
+</div>
+
+<!-- ===== PART 1: PREP ===== -->
+<section class="part">
+  <div class="part-tag">Part 1</div>
+  <h1 class="part-title">Before you start</h1>
+  <p class="lede">A 60-second prep so you don't get stuck halfway through.</p>
+
+  <h2>What you need</h2>
+  <ul>
+    <li><strong>A working email address</strong> you can check during setup (you'll receive verification emails from each service).</li>
+    <li><strong>A web browser</strong> — Chrome, Edge, or Firefox. Anything modern.</li>
+    <li><strong>A GitHub account</strong> — free. If you don't have one, no problem; we'll walk you through signing up at the start of Part 4. Signing up takes about 60 seconds when you use a Google account.</li>
+    <li><strong>A phone that can receive SMS</strong> — Backblaze <em>sometimes</em> asks for a one-time verification code, depending on your account. You may or may not be prompted. Have a phone nearby just in case.</li>
+    <li><strong>About one hour</strong> of uninterrupted time the first time you do this. Subsequent deployments take less than 15 minutes.</li>
+  </ul>
+
+  <div class="callout ok">
+    <strong>Good news</strong>
+    None of the three services require a credit card. The free tiers used here cover small-to-medium internal use indefinitely.
+  </div>
+
+  <h2>The shape of what we're building</h2>
+  <p>
+    The 3CORE Portal is made of three moving parts. They live on three different free services. Your only job in this guide is to wire the three together by copying a handful of values from one place to another.
+  </p>
+  <table>
+    <thead><tr><th>Part</th><th>What it does</th><th>Where it lives</th></tr></thead>
+    <tbody>
+      <tr><td><strong>File storage</strong></td><td>Holds documents users upload</td><td>Backblaze B2</td></tr>
+      <tr><td><strong>Database</strong></td><td>Holds users, projects, tasks, audit log</td><td>Neon</td></tr>
+      <tr><td><strong>Application</strong></td><td>The website itself + the engine behind it</td><td>Render</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The notepad</h2>
+  <p>Open a blank text file on your computer now. Title it <strong>3CORE Deployment Values</strong>. By the end of Part 3 it will contain these eight values:</p>
+  <pre>B2 Endpoint URL      : (filled in during Part 2)
+B2 Region            : (filled in during Part 2)
+B2 Key ID            : (filled in during Part 2)
+B2 Application Key   : (filled in during Part 2)
+B2 Bucket Name       : (filled in during Part 2)
+
+DATABASE_URL         : (filled in during Part 3)
+
+ADMIN_INITIAL_PASSWORD : (you choose — write it here so you don't forget it)
+SEED_PM_PASSWORD       : (you choose — same thing)</pre>
+  <p>Treat this file like a password. Don't email it, don't paste it into chat, and delete it after deployment is complete.</p>
+</section>
+
+<!-- ===== PART 2: BACKBLAZE ===== -->
+<section class="part">
+  <div class="part-tag">Part 2</div>
+  <h1 class="part-title">Backblaze B2 — File storage</h1>
+  <p class="lede">Backblaze stores every file your users upload through the portal: PDFs, photos, drawings, signed documents. The free tier gives you 10 gigabytes — enough for tens of thousands of typical office documents.</p>
+
+  <div class="step">
+    <div class="step-num">Step 2.1</div>
+    <h3>Create the Backblaze account</h3>
+    <ol>
+      <li>Open <strong>https://www.backblaze.com/sign-up/cloud-storage</strong> in your browser.</li>
+      <li>Enter your email address and a strong password. Click <strong>Sign Up</strong>.</li>
+      <li>Backblaze emails you a verification link. Open the email and click it.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2.2</div>
+    <h3>Enable B2 Cloud Storage on your account</h3>
+    <ol>
+      <li>After login you'll see the Backblaze dashboard. Look for a banner or button labelled <strong>Enable B2 Cloud Storage</strong> and click it.</li>
+      <li>Backblaze <em>may</em> ask for "Mobile Verification" at this point — not every account is prompted. If you see the prompt, enter your phone number, click <strong>Send Code</strong>, wait for the SMS, type the code in, click <strong>Verify</strong>. If you don't see this prompt, just move on.</li>
+      <li>The left-hand sidebar now shows <strong>B2 Cloud Storage</strong> as a section. You are ready to proceed.</li>
+    </ol>
+    <div class="callout warn">
+      <strong>If you don't see "Enable B2"</strong>
+      Your account may already be enabled. Look for "Buckets" in the left sidebar — if it's there, skip to step 2.3.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2.3</div>
+    <h3>Create a bucket (a folder in the cloud)</h3>
+    <p>A "bucket" is just a named container that holds files. We'll make one bucket for the entire 3CORE portal.</p>
+    <ol>
+      <li>In the left sidebar, under <strong>B2 Cloud Storage</strong>, click <strong>Buckets</strong>.</li>
+      <li>Click the blue <strong>Create a Bucket</strong> button at the top.</li>
+      <li>Fill in the form exactly like this:
+        <ul>
+          <li><strong>Bucket Unique Name:</strong> <code>3core-storage</code>
+            <p class="small">If Backblaze says the name is taken, add a suffix: <code>3core-storage-acme</code>, etc. Bucket names are globally unique across all Backblaze customers.</p>
+          </li>
+          <li><strong>Files in Bucket:</strong> select <strong>Private</strong>. Do not pick "Public".</li>
+          <li><strong>Default Encryption:</strong> Disable.</li>
+          <li><strong>Object Lock:</strong> Disable.</li>
+        </ul>
+      </li>
+      <li>Click <strong>Create a Bucket</strong>. You'll land on the bucket's details page.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2.4</div>
+    <h3>Save the Endpoint URL and Region</h3>
+    <p>On the bucket details page, find the row labelled <strong>Endpoint</strong>. It will look something like:</p>
+    <pre>s3.us-east-005.backblazeb2.com</pre>
+    <ol>
+      <li>Copy the entire endpoint string into your notepad on the line <strong>B2 Endpoint URL</strong>. (Later you will prefix it with <code>https://</code> — for now save it as shown.)</li>
+      <li>The endpoint contains the region. In the example above the region is <code>us-east-005</code>. Copy just the region part into your notepad on the line <strong>B2 Region</strong>.</li>
+      <li>Also write the bucket name you chose into your notepad on the line <strong>B2 Bucket Name</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2.5</div>
+    <h3>Create an Application Key (the password for the app)</h3>
+    <p>An Application Key is what 3CORE will use to read and write files in your bucket. Think of it as a username and password specifically for software.</p>
+    <ol>
+      <li>In the left sidebar, click <strong>Application Keys</strong>.</li>
+      <li>Click <strong>Add a New Application Key</strong>.</li>
+      <li>Fill the form:
+        <ul>
+          <li><strong>Name of Key:</strong> <code>3core-app</code></li>
+          <li><strong>Allow access to Bucket(s):</strong> select the bucket you created in step 2.3 (do not leave it as "All").</li>
+          <li><strong>Type of Access:</strong> <strong>Read and Write</strong>.</li>
+          <li>Leave <em>File name prefix</em> and <em>Duration</em> blank.</li>
+        </ul>
+      </li>
+      <li>Click <strong>Create New Key</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 2.6</div>
+    <h3>Copy the key values — this page shows them only once</h3>
+    <div class="callout warn">
+      <strong>Stop and read this before clicking anything else</strong>
+      Backblaze shows you the secret part of the key one time and one time only. If you close this page without copying it, the secret is gone and you'll have to delete the key and make a new one. Don't navigate away until both values are in your notepad.
+    </div>
+    <p>The page now shows two boxes:</p>
+    <ul>
+      <li><strong>keyID</strong> — a short string starting with a digit, around 25 characters. Copy it into your notepad on the line <strong>B2 Key ID</strong>.</li>
+      <li><strong>applicationKey</strong> — a longer string starting with <code>K005</code> (or similar), around 31 characters. Copy it into your notepad on the line <strong>B2 Application Key</strong>.</li>
+    </ul>
+    <p>Once both are in the notepad, you may close the page.</p>
+  </div>
+
+  <div class="checklist">
+    <h4>End of Part 2 — your notepad should now contain</h4>
+    <ul>
+      <li><strong>B2 Endpoint URL</strong> &mdash; e.g. <code>s3.us-east-005.backblazeb2.com</code></li>
+      <li><strong>B2 Region</strong> &mdash; e.g. <code>us-east-005</code></li>
+      <li><strong>B2 Key ID</strong> &mdash; the short string</li>
+      <li><strong>B2 Application Key</strong> &mdash; the long string starting with <code>K005</code></li>
+      <li><strong>B2 Bucket Name</strong> &mdash; e.g. <code>3core-storage</code></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== PART 3: NEON ===== -->
+<section class="part">
+  <div class="part-tag">Part 3</div>
+  <h1 class="part-title">Neon — Database</h1>
+  <p class="lede">Neon hosts the database that stores your users, projects, tasks, expenditures, and audit log. The free tier gives you half a gigabyte, which holds tens of thousands of records.</p>
+
+  <div class="step">
+    <div class="step-num">Step 3.1</div>
+    <h3>Sign up</h3>
+    <p>Neon offers several sign-in options. If you already created a GitHub account (see Part 4 below), use <strong>Continue with GitHub</strong> — using the same login for all services keeps things tidy. If not, <strong>Continue with Google</strong> works just as well and is the fastest path.</p>
+    <ol>
+      <li>Open <strong>https://neon.tech</strong> in your browser.</li>
+      <li>Click <strong>Sign up</strong> in the top right corner.</li>
+      <li>Click <strong>Continue with GitHub</strong> (if you have one) or <strong>Continue with Google</strong>.</li>
+      <li>Approve the permission prompt.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3.2</div>
+    <h3>Create a project</h3>
+    <p>After login you'll see a "Create your first project" screen.</p>
+    <ol>
+      <li><strong>Project name:</strong> <code>3core</code></li>
+      <li><strong>Postgres version:</strong> leave the default (whichever number is preselected).</li>
+      <li><strong>Cloud provider:</strong> leave default (AWS).</li>
+      <li><strong>Region:</strong> choose <strong>AWS US East (Ohio)</strong>. This will sit close to Render's default region, keeping the app fast.</li>
+      <li>Click <strong>Create project</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 3.3</div>
+    <h3>Copy the connection string</h3>
+    <p>Immediately after the project is created, Neon shows a box titled <strong>Connection string</strong>. It has two tabs: <strong>Pooled connection</strong> and <strong>Direct connection</strong>. The Pooled one is selected by default — that's the one we want.</p>
+    <ol>
+      <li>Click the small <strong>copy icon</strong> next to the connection string.</li>
+      <li>Paste it into your notepad on the line <strong>DATABASE_URL</strong>. It will look roughly like this:</li>
+    </ol>
+    <pre>postgresql://3core_owner:abc123def@ep-cool-name-12345-pooler.us-east-2.aws.neon.tech/3core?sslmode=require</pre>
+    <div class="callout">
+      <strong>Why "pooled"?</strong>
+      Neon's free tier sleeps when no one is using it. The pooled connection wakes the database faster and handles multiple simultaneous users better. Always use this one unless told otherwise.
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>End of Part 3 — your notepad should now also contain</h4>
+    <ul>
+      <li><strong>DATABASE_URL</strong> &mdash; the long <code>postgresql://...</code> string from Neon</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== PART 4: RENDER ===== -->
+<section class="part">
+  <div class="part-tag">Part 4</div>
+  <h1 class="part-title">Render — Hosting</h1>
+  <p class="lede">Render runs the 3CORE Portal itself. You'll set up two pieces here: a <strong>backend</strong> (the engine that talks to Backblaze and Neon) and a <strong>frontend</strong> (the website your users open in their browser).</p>
+
+  <div class="step">
+    <div class="step-num">Step 4.1</div>
+    <h3>Create a GitHub account (skip if you already have one)</h3>
+    <p>GitHub is where the 3CORE source code lives. Render needs to read code from GitHub to deploy your app, so you need a GitHub account. Signing up takes under a minute when you use your Google account.</p>
+    <ol>
+      <li>Open <strong>https://github.com/signup</strong> in your browser.</li>
+      <li>On the very first screen GitHub asks for an email address. Below the email field, click the link <strong>"Continue with Google"</strong>.
+        <p class="small">If you don't see "Continue with Google" immediately, type your Google email address into the email field and click <strong>Continue</strong> — GitHub will then offer to link your Google account.</p>
+      </li>
+      <li>A Google sign-in window appears. Choose the Google account you'd like to associate. Approve the permission prompt.</li>
+      <li>GitHub will ask you to pick a <strong>username</strong>. Pick something short, all-lowercase, no spaces. Write this username down — you'll see it in URLs later.</li>
+      <li>GitHub may send a one-time code to your email to confirm. Open the email and enter the code.</li>
+      <li>You're done. You should now be on the GitHub home page.</li>
+    </ol>
+    <div class="callout">
+      <strong>Why GitHub?</strong>
+      GitHub stores the 3CORE source code. Render reads code from GitHub when deploying. You don't need to learn GitHub for anything else — just sign in and click "Fork."
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.2</div>
+    <h3>Fork the 3CORE repository to your account</h3>
+    <p>"Forking" means making your own personal copy of the 3CORE code on your GitHub account. You need your own copy because Render will deploy from it.</p>
+    <ol>
+      <li>Make sure you're still signed into GitHub. If not, sign in at <strong>https://github.com</strong>.</li>
+      <li>Open <strong>https://github.com/Past-da-king/3CORE</strong> in your browser.</li>
+      <li>In the top right of that page, find the <strong>Fork</strong> button (it's next to "Star" and "Watch"). Click it.
+        <p class="small">If you see a dropdown menu after clicking, just pick your own account name from the list.</p>
+      </li>
+      <li>A "Create a new fork" page appears. Leave all defaults as they are. At the bottom, click the green <strong>Create fork</strong> button.</li>
+      <li>Wait 3–5 seconds. The page reloads and you'll now be at a URL like <code>https://github.com/YOUR-USERNAME/3CORE</code>. That's your personal copy.</li>
+    </ol>
+    <div class="callout ok">
+      <strong>How to confirm the fork worked</strong>
+      Look at the top of the page. You should see <code>YOUR-USERNAME / 3CORE</code> — and just under it, a small note saying "forked from Past-da-king/3CORE." If both are there, you're good.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.3</div>
+    <h3>Create the Render account</h3>
+    <ol>
+      <li>Open <strong>https://render.com</strong> in your browser.</li>
+      <li>Click <strong>Get Started for Free</strong> in the top right.</li>
+      <li>Choose <strong>Sign in with GitHub</strong>. Use the GitHub account you just created (or already had).</li>
+      <li>Render asks for permission to read your GitHub repositories. Click <strong>Authorize Render</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.4</div>
+    <h3>Tell Render to set up both services at once (Blueprint)</h3>
+    <p>The 3CORE repository contains a file called <code>render.yaml</code> that describes both services. Render can read this and create everything in one click.</p>
+    <ol>
+      <li>Go to your Render dashboard (<strong>https://dashboard.render.com</strong>).</li>
+      <li>Click the blue <strong>New +</strong> button in the top right.</li>
+      <li>Choose <strong>Blueprint</strong> from the dropdown.</li>
+      <li>If asked, click <strong>Configure account</strong> to grant Render access to your forked 3CORE repository. On the GitHub page that pops up, choose <strong>Only select repositories</strong>, pick <strong>3CORE</strong>, click <strong>Save</strong>.</li>
+      <li>Back on Render, find <strong>3CORE</strong> in the repository list and click <strong>Connect</strong>.</li>
+      <li>Render reads <code>render.yaml</code> and shows two services that will be created: <code>3core-api</code> (the backend) and <code>3core-portal</code> (the frontend).</li>
+      <li>Click <strong>Apply</strong>.</li>
+    </ol>
+    <div class="callout warn">
+      <strong>The first build will fail — that's normal</strong>
+      Render will start building both services but the backend will refuse to start because the secret environment variables aren't filled in yet. We fix that in the next step.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.5</div>
+    <h3>Fill in the backend's environment variables</h3>
+    <p>The backend needs the values from your notepad. We paste them in now.</p>
+    <ol>
+      <li>On the Render dashboard, click the <strong>3core-api</strong> service.</li>
+      <li>In the left sidebar of that service's page, click <strong>Environment</strong>.</li>
+      <li>You'll see a list of environment variables. Some are pre-filled (don't touch those). The ones marked "Required" or showing an empty value are what you need to fill in.</li>
+    </ol>
+    <p>Use this table — paste the value from your notepad into each variable:</p>
+    <table>
+      <thead><tr><th>Variable name on Render</th><th>What to paste from your notepad</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="var">DATABASE_URL</td>
+          <td>The Neon connection string</td>
+          <td>Paste exactly, including the trailing <code>?sslmode=require</code></td>
+        </tr>
+        <tr>
+          <td class="var">B2_ACCESS_KEY_ID</td>
+          <td>B2 Key ID</td>
+          <td>Short string from Backblaze step 2.6</td>
+        </tr>
+        <tr>
+          <td class="var">B2_SECRET_ACCESS_KEY</td>
+          <td>B2 Application Key</td>
+          <td>Long string starting with <code>K005</code></td>
+        </tr>
+        <tr>
+          <td class="var">B2_ENDPOINT_URL</td>
+          <td><code>https://</code> + B2 Endpoint URL</td>
+          <td>You must prefix with <code>https://</code>. Example: <code>https://s3.us-east-005.backblazeb2.com</code></td>
+        </tr>
+        <tr>
+          <td class="var">B2_REGION</td>
+          <td>B2 Region</td>
+          <td>e.g. <code>us-east-005</code></td>
+        </tr>
+        <tr>
+          <td class="var">B2_BUCKET_NAME</td>
+          <td>B2 Bucket Name</td>
+          <td>e.g. <code>3core-storage</code></td>
+        </tr>
+        <tr>
+          <td class="var">ADMIN_INITIAL_PASSWORD</td>
+          <td>Pick a strong password</td>
+          <td>You'll use this for the very first login. Write it in your notepad.</td>
+        </tr>
+        <tr>
+          <td class="var">SEED_PM_PASSWORD</td>
+          <td>Pick another strong password</td>
+          <td>Optional. Only used if you run the example seed script.</td>
+        </tr>
+        <tr>
+          <td class="var">SECRET_KEY</td>
+          <td><em>Leave alone</em></td>
+          <td>Render generates this automatically.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>When all rows are filled, scroll down and click <strong>Save Changes</strong>. Render will start redeploying the backend with the new values.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.6</div>
+    <h3>Match the frontend's API URL to the backend's address — important</h3>
+    <p>The frontend is just a web page; it needs to know <em>which URL</em> to call for the backend. By default the template assumes the backend is named <code>3core-api</code> and lives at <code>https://3core-api.onrender.com</code>. If your services have different names, this URL has to change.</p>
+    <ol>
+      <li>In Render's dashboard, click the <strong>3core-api</strong> service. At the top of its page you'll see its public URL — something like <code>https://3core-api.onrender.com</code> or <code>https://3core-api-xyz.onrender.com</code>. <strong>Copy this URL exactly.</strong></li>
+      <li>Now go back to the dashboard and click the <strong>3core-portal</strong> service.</li>
+      <li>In the left sidebar of the portal service, click <strong>Environment</strong>.</li>
+      <li>Find the row <code>VITE_API_URL</code>. Click <strong>Edit</strong>.</li>
+      <li>Paste the backend URL you copied. <strong>No trailing slash.</strong> Correct: <code>https://3core-api.onrender.com</code>. Wrong: <code>https://3core-api.onrender.com/</code>.</li>
+      <li>Click <strong>Save Changes</strong>. The frontend will redeploy.</li>
+    </ol>
+    <div class="callout warn">
+      <strong>Why this matters</strong>
+      If <code>VITE_API_URL</code> doesn't match the actual backend URL, every action in the portal (login, viewing projects, uploading files) will silently fail. Browser developer tools will show "404 Not Found" or "Failed to fetch". This is the single most common cause of a broken deployment — double-check this value.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.7</div>
+    <h3>Tell the backend it's safe to accept requests from the frontend (CORS)</h3>
+    <p>The backend has a safety check that only accepts traffic from approved websites. You need to add your frontend's URL to that approved list.</p>
+    <ol>
+      <li>Click the <strong>3core-portal</strong> service. At the top of its page, copy its public URL — something like <code>https://3core-portal.onrender.com</code>.</li>
+      <li>Go back to the dashboard and click <strong>3core-api</strong> → <strong>Environment</strong>.</li>
+      <li>Find the row <code>CORS_ORIGINS</code>. Click <strong>Edit</strong>.</li>
+      <li>Replace the value with your portal URL. <strong>No trailing slash.</strong> Example: <code>https://3core-portal.onrender.com</code>.</li>
+      <li>If you want to also allow local testing from your laptop, separate values with commas: <code>https://3core-portal.onrender.com,http://localhost:3000</code></li>
+      <li>Click <strong>Save Changes</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.8</div>
+    <h3>Wait for both services to finish deploying</h3>
+    <ol>
+      <li>Click <strong>3core-api</strong> and watch the <strong>Logs</strong> tab. The backend is ready when you see a line like <code>Uvicorn running on http://0.0.0.0:10000</code>.</li>
+      <li>Click <strong>3core-portal</strong>. Wait until its status badge (top of the page) turns green and says <strong>Live</strong>.</li>
+    </ol>
+    <p>Typical deploy time is 3 to 10 minutes for each service. Both can deploy at the same time.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-num">Step 4.9</div>
+    <h3>Create the database tables and the admin user (one-time)</h3>
+    <p>Your Neon database is empty. We need to create the tables and the very first admin user. The 3CORE code has a script for this; you'll run it once from inside the backend service.</p>
+    <ol>
+      <li>Click <strong>3core-api</strong>. In the top tabs of its page, click <strong>Shell</strong>.</li>
+      <li>A terminal opens inside the backend's server. At the prompt, type:</li>
+    </ol>
+    <pre>python init_db.py</pre>
+    <p>Press <strong>Enter</strong>. You should see:</p>
+    <pre>Creating database tables...
+Creating admin user...
+Database initialized.</pre>
+    <p>If you see this, your database is ready. Close the Shell tab.</p>
+    <div class="callout">
+      <strong>Need to do it again?</strong>
+      Running this script a second time will not duplicate the admin user — it skips creation if one already exists. So if you ever need to reset, first remove the admin row from Neon's SQL Editor, then run the script again.
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h4>End of Part 4 — what's live</h4>
+    <ul>
+      <li><strong>Portal (your users open this):</strong> <code>https://3core-portal.onrender.com</code> (or your custom name)</li>
+      <li><strong>API (technical / for debugging):</strong> <code>https://3core-api.onrender.com</code></li>
+      <li>Database is initialized; admin user exists.</li>
+      <li>Files uploaded through the portal go to your Backblaze bucket.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== PART 5: FIRST LOGIN ===== -->
+<section class="part">
+  <div class="part-tag">Part 5</div>
+  <h1 class="part-title">First login &amp; basic admin</h1>
+  <p class="lede">A short checklist for the first time you open the live portal.</p>
+
+  <h2>Logging in for the first time</h2>
+  <ol>
+    <li>Open the portal URL (e.g. <code>https://3core-portal.onrender.com</code>) in your browser.</li>
+    <li><strong>Username:</strong> <code>admin</code></li>
+    <li><strong>Password:</strong> the <code>ADMIN_INITIAL_PASSWORD</code> you set in step 4.5.</li>
+    <li>Click <strong>Sign In</strong>.</li>
+  </ol>
+
+  <div class="callout warn">
+    <strong>Change the admin password immediately</strong>
+    The password you set in Render's environment variables is also visible to anyone who has access to your Render dashboard. As soon as you log in, change it to something only you know.
+  </div>
+
+  <h2>Steps to take right after first login</h2>
+  <ol>
+    <li><strong>Change the admin password.</strong> Click your name/avatar in the top right → <strong>User Settings</strong> → set a new password.</li>
+    <li><strong>Add real users.</strong> Open <strong>System Administration</strong> from the sidebar → <strong>Add User</strong>. Set the role appropriately:
+      <ul>
+        <li><code>admin</code> — full control, can add users and delete projects</li>
+        <li><code>pm</code> — project manager: can create/edit projects they're assigned to</li>
+        <li><code>team</code> — regular team member: can update tasks they're assigned to</li>
+        <li><code>executive</code> — read-only oversight across all projects</li>
+      </ul>
+    </li>
+    <li><strong>Create your first real project.</strong> Either manually via <strong>Project Setup</strong>, or import an Excel using the Excel Import tab.</li>
+  </ol>
+</section>
+
+<!-- ===== PART 6: TROUBLESHOOTING ===== -->
+<section class="part">
+  <div class="part-tag">Part 6</div>
+  <h1 class="part-title">Troubleshooting</h1>
+  <p class="lede">Specific symptoms and what to check.</p>
+
+  <h2>"I open the portal and it loads but login fails"</h2>
+  <ul>
+    <li>Make sure you're using the exact <code>ADMIN_INITIAL_PASSWORD</code> from Render. Passwords are case-sensitive.</li>
+    <li>If that's correct, the most likely cause is that <code>VITE_API_URL</code> on the frontend doesn't match the backend's real URL. See step 4.6.</li>
+    <li>Open the browser's developer tools (F12) → <strong>Network</strong> tab → try to log in again. If you see red rows pointing at the wrong URL, fix <code>VITE_API_URL</code>.</li>
+  </ul>
+
+  <h2>"I get a CORS error in the browser console"</h2>
+  <ul>
+    <li>The backend's <code>CORS_ORIGINS</code> doesn't include the frontend URL. See step 4.7.</li>
+    <li>Make sure there's no trailing slash on either URL.</li>
+    <li>Save changes on Render and wait for the backend to redeploy (about 2 minutes).</li>
+  </ul>
+
+  <h2>"The app loads but I can't upload files"</h2>
+  <ul>
+    <li>One of the four Backblaze values is wrong. Re-check them in Render's Environment page against your notepad.</li>
+    <li>Common mistakes:
+      <ul>
+        <li><code>B2_ENDPOINT_URL</code> missing the <code>https://</code> prefix.</li>
+        <li><code>B2_REGION</code> includes extra characters or doesn't match the endpoint.</li>
+        <li><code>B2_BUCKET_NAME</code> has a typo.</li>
+      </ul>
+    </li>
+    <li>Open <strong>3core-api</strong> → <strong>Logs</strong> tab. Try an upload from the portal. Errors with <code>botocore</code> in the line are Backblaze problems and the error message often tells you exactly what's wrong.</li>
+  </ul>
+
+  <h2>"The first request after a quiet period is slow"</h2>
+  <p>On Render's free tier, services sleep after 15 minutes of no traffic. The first request after a sleep takes 30–60 seconds to wake everything up. Subsequent requests are fast. Upgrade to a paid plan to remove this behavior.</p>
+
+  <h2>"I lost the admin password"</h2>
+  <ol>
+    <li>Open Neon's dashboard → click your project → <strong>SQL Editor</strong>.</li>
+    <li>Run: <code>DELETE FROM users WHERE username = 'admin';</code></li>
+    <li>Go to Render → <strong>3core-api</strong> → <strong>Environment</strong> → change <code>ADMIN_INITIAL_PASSWORD</code> to something new → Save.</li>
+    <li>After the backend redeploys, open <strong>Shell</strong> and run <code>python init_db.py</code> again.</li>
+  </ol>
+
+  <h2>"How do I see what users are doing?"</h2>
+  <p>Once logged in as admin, open <strong>Monitoring</strong> from the sidebar — every login, upload, project change, and deletion is logged there with timestamp and user.</p>
+
+  <h2>"Render says I've hit a build limit"</h2>
+  <p>Free tier accounts get 500 build minutes per month. A 3CORE deployment uses about 5 minutes of build time. If you're hitting limits, you're probably redeploying too often by accident — check that automatic deploys aren't triggering on every tiny git push.</p>
+</section>
+
+<!-- ===== GLOSSARY ===== -->
+<section class="part">
+  <div class="part-tag">Appendix</div>
+  <h1 class="part-title">Glossary</h1>
+  <p class="lede">Plain definitions of the technical words you'll see while doing this.</p>
+
+  <table>
+    <thead><tr><th>Term</th><th>Plain meaning</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Bucket</strong></td><td>A named folder in cloud storage that holds files. Backblaze and other cloud-storage services use this term.</td></tr>
+      <tr><td><strong>CORS</strong></td><td>"Cross-Origin Resource Sharing." A browser safety check that stops random websites from making requests to your backend. You tell the backend which websites are allowed — only those will work.</td></tr>
+      <tr><td><strong>Connection string</strong></td><td>One long line of text that contains everything needed to connect to a database: the host, port, username, password, and database name, all in one URL.</td></tr>
+      <tr><td><strong>Endpoint</strong></td><td>The web address of a service. Backblaze calls its storage server's web address an "endpoint."</td></tr>
+      <tr><td><strong>Environment variable</strong></td><td>A name-value setting that you give a piece of software when it starts. It's a way to store secrets and configuration outside the code.</td></tr>
+      <tr><td><strong>Fork</strong></td><td>To make your own personal copy of someone else's GitHub repository. Your copy is independent and you can change it freely.</td></tr>
+      <tr><td><strong>Frontend / Backend</strong></td><td>The frontend is the website your users see and click on. The backend is the engine behind it that talks to the database and storage. They are separate programs.</td></tr>
+      <tr><td><strong>Postgres / PostgreSQL</strong></td><td>A specific kind of database. Neon is a hosted Postgres service.</td></tr>
+      <tr><td><strong>Pooled connection</strong></td><td>A way of connecting to a database that's better at handling multiple users at the same time and waking the database up faster. Always preferred for web apps on serverless databases.</td></tr>
+      <tr><td><strong>Render Blueprint</strong></td><td>A feature where Render reads a configuration file in your repository and creates all the necessary services automatically.</td></tr>
+      <tr><td><strong>Repository</strong></td><td>A folder of code stored on GitHub. 3CORE is one repository.</td></tr>
+      <tr><td><strong>Shell</strong></td><td>A text-based way to type commands directly into a running server. Render gives you one for each service.</td></tr>
+      <tr><td><strong>SigV4</strong></td><td>The cryptographic method used to prove a request is authorized when talking to S3-compatible storage like Backblaze. You don't need to understand it; it just needs to work, which it will if the four B2 values are correct.</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="rule" />
+  <p class="small">3CORE Portal Deployment Guide • v1.0 • Generated for internal use. Keep this document with your operations records.</p>
+</section>
+
+</body>
+</html>

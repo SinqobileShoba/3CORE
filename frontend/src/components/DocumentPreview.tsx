@@ -6,9 +6,15 @@ interface DocumentPreviewProps {
   onClose: () => void;
   fileName: string;
   fileUrl: string;
+  /**
+   * Called when the user clicks Download. The preview's `fileUrl` is signed for
+   * INLINE display, so reusing it would render the file in a new tab instead of
+   * saving it. The parent should request a fresh attachment-disposition URL.
+   */
+  onDownload?: () => void;
 }
 
-export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ isOpen, onClose, fileName, fileUrl }) => {
+export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ isOpen, onClose, fileName, fileUrl, onDownload }) => {
   if (!isOpen) return null;
 
   const getFileType = (name: string) => {
@@ -60,7 +66,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ isOpen, onClos
             <h3 className="text-xl font-semibold text-slate-900 dark:text-white uppercase mb-4 tracking-tight">Preview Unavailable</h3>
             <p className="text-slate-500 max-w-xs mb-8 font-medium">This file type cannot be previewed within the application. Please download the document to view its contents.</p>
             <button 
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={() => (onDownload ? onDownload() : window.open(fileUrl, '_blank'))}
               className="bg-accent-primary hover:bg-accent-secondary text-white px-8 py-4 rounded-2xl font-semibold uppercase text-[10px] tracking-widest shadow-xl transition-all flex items-center gap-3"
             >
               <Download className="w-4 h-4" /> Download Document
@@ -92,7 +98,7 @@ export const DocumentPreview: React.FC<DocumentPreviewProps> = ({ isOpen, onClos
 
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => window.open(fileUrl, '_blank')}
+              onClick={() => (onDownload ? onDownload() : window.open(fileUrl, '_blank'))}
               className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl text-slate-500 dark:text-slate-400 font-semibold text-[9px] uppercase tracking-widest transition-all border border-slate-200 dark:border-white/10"
             >
               <Download className="w-3.5 h-3.5" /> Download

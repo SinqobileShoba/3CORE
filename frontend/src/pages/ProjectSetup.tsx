@@ -42,6 +42,46 @@ export const ProjectSetup: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [isPlanLoading, setIsPlanLoading] = useState(false);
 
+  // Excel Import State
+  const [importing, setImporting] = useState(false);
+  const [importedName, setImportedName] = useState<string | null>(null);
+
+  const handleExcelImport = async (file: File | undefined) => {
+    if (!file) return;
+    setImporting(true);
+    setError('');
+    setSuccess('');
+    setImportedName(null);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await api.post('projects/import/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setImportedName(res.data?.project_name || file.name);
+      setSuccess(`Imported project "${res.data?.project_name}" with all activities.`);
+      // refresh the projects list so the Manage tab shows it
+      const projRes = await projectService.getProjects();
+      setProjects(projRes);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail;
+      setError(detail ? `Import failed: ${detail}` : 'Import failed. Check the file format.');
+    } finally {
+      setImporting(false);
+      setTimeout(() => { setSuccess(''); setError(''); }, 5000);
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    // The repo ships a working example at /mock_project_import.xlsx (root of repo).
+    // For a real template download endpoint we'd serve this from the backend,
+    // but for now the public folder serves a static copy.
+    const link = document.createElement('a');
+    link.href = '/mock_project_import.xlsx';
+    link.download = 'project_import_template.xlsx';
+    link.click();
+  };
+
   const currentUser = authService.getCurrentUser();
   const isAdminExec = currentUser?.role === 'admin' || currentUser?.role === 'executive';
 
@@ -251,16 +291,54 @@ export const ProjectSetup: React.FC = () => {
               <h3 className="text-2xl font-semibold text-slate-900 dark:text-white uppercase tracking-tight">Structured Excel Ingestion</h3>
               <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">Download our master template to prepare your project phases, dependencies, and resource allocations for bulk synchronization.</p>
               <div className="pt-4">
-                <button className="bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold transition-all border border-slate-200 dark:border-white/10 flex items-center gap-3 mx-auto uppercase text-xs tracking-widest">
+                <button
+                  type="button"
+                  onClick={handleDownloadTemplate}
+                  className="bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold transition-all border border-slate-200 dark:border-white/10 flex items-center gap-3 mx-auto uppercase text-xs tracking-widest"
+                >
                   <Download className="w-4 h-4" /> Download Baseline Template
                 </button>
               </div>
             </div>
-            <div className="relative border-2 border-dashed border-slate-200 dark:border-white/5 rounded-[2.5rem] p-20 hover:border-brand-primary/30 transition-all cursor-pointer group bg-slate-50 dark:bg-black/20 shadow-inner">
-              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept=".xlsx" />
-              <Upload className="w-12 h-12 text-slate-400 dark:text-slate-600 mx-auto mb-4 group-hover:text-brand-primary transition-colors" />
-              <p className="text-slate-500 dark:text-slate-300 font-semibold uppercase tracking-widest text-xs">Drop excel here or click to browse</p>
-            </div>
+
+            {success && (
+              <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                <CheckCircle2 className="w-4 h-4" /> {success}
+              </div>
+            )}
+            {error && (
+              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 px-4 py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4" /> {error}
+              </div>
+            )}
+
+            <label className={`relative block border-2 border-dashed rounded-[2.5rem] p-20 transition-all cursor-pointer group shadow-inner ${importing ? 'border-brand-primary bg-brand-primary/5 cursor-wait' : 'border-slate-200 dark:border-white/5 hover:border-brand-primary/30 bg-slate-50 dark:bg-black/20'}`}>
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-wait"
+                accept=".xlsx"
+                disabled={importing}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  handleExcelImport(file);
+                  // reset the input so the same file can be re-uploaded after a failure
+                  e.target.value = '';
+                }}
+              />
+              {importing ? (
+                <>
+                  <Loader2 className="w-12 h-12 text-brand-primary mx-auto mb-4 animate-spin" />
+                  <p className="text-slate-500 dark:text-slate-300 font-semibold uppercase tracking-widest text-xs">Importing…</p>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-12 h-12 text-slate-400 dark:text-slate-600 mx-auto mb-4 group-hover:text-brand-primary transition-colors" />
+                  <p className="text-slate-500 dark:text-slate-300 font-semibold uppercase tracking-widest text-xs">
+                    {importedName ? `Imported: ${importedName} — pick another to import more` : 'Drop excel here or click to browse'}
+                  </p>
+                </>
+              )}
+            </label>
           </div>
         )}
 
