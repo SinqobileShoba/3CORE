@@ -1,0 +1,207 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[left=0.6in,top=0.5in,right=0.6in,bottom=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{url}
+
+% Define colors
+\definecolor{darkgray}{RGB}{50,50,50}
+
+% Formatting sections
+\titleformat{\section}{\normalsize\bfseries\scshape}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{6pt}
+
+% Formatting lists
+\setlist[itemize]{noitemsep, topsep=2pt, leftmargin=1.5em}
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\pagestyle{empty} % No page numbers
+
+% Header
+\begin{center}
+    {\LARGE \textbf{Ayanda Thabo Phaketsi}} \\[4pt]
+    \small
+    \href{mailto:phaketsiayanda@gmail.com}{phaketsiayanda@gmail.com} $|$ 
+    \href{https://phaketsi.vercel.app}{Portfolio: phaketsi.vercel.app} $|$ 
+    \href{https://github.com/Past-da-king}{GitHub: Past-da-king} $|$ 
+    \href{https://www.linkedin.com/in/ayanda-phakesti-747877248/}{LinkedIn} $|$ 
+    South Africa
+\end{center}
+
+\vspace{4pt}
+
+% Education
+\section*{Education}
+
+\textbf{University of Cape Town} \hfill Cape Town, South Africa \\
+\textit{BSc Computer Science and Business Computing} \hfill \textbf{Dec 2025}
+
+\vspace{4pt}
+\textbf{Relevant Coursework:} Software Engineering, Algorithms and Data Structures, Databases, Operating Systems, Computer Networks, Machine Learning, Systems Analysis and Design
+
+\vspace{8pt}
+
+% Projects
+\section*{Projects}
+% Strat Edge Portal
+\textbf{Strat Edge Portal Pro | Project Management System} \hfill \textbf{2026}\\
+\small{Developed for Strat Edge}
+
+\textit{Project Description:} 
+Built a portal for tracking project schedules and finances. The system includes portfolio monitoring and reporting for stakeholders.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{System Build:} Created the platform using FastAPI and React with JWT authentication and access control.
+    \item \textbf{Analytics:} Built backend services for project metrics, budget burndown, and task completion.
+    \item \textbf{Storage:} Integrated document storage with Google Cloud Storage using signed URLs for access.
+    \item \textbf{Dashboards:} Built charts and network diagrams to track project progress.
+\end{itemize}
+
+\vspace{8pt}
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Backend:} Python (FastAPI), SQLAlchemy, Google Cloud Storage, Pandas
+    \item \textbf{Frontend:} React (TypeScript), Vite, Tailwind CSS, Recharts
+\end{itemize}
+
+\vspace{8pt}
+
+% clia
+\textbf{clia | Local AI Assistant for Software Tasks} \hfill \textbf{2025}\\
+\small\url{https://pypi.org/project/clia-swe-ai/}
+
+\textit{Project Description:} 
+Built an AI assistant that helps with software tasks like refactoring and debugging by interacting with the local developer environment.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{Logic:} Built a loop for managing tool usage and multi-turn chat with Google Gemini.
+    \item \textbf{Context:} Used Model Context Protocol (MCP) to build a tool server for filesystem and command-line actions.
+    \item \textbf{Safety:} Added a permission model where users approve destructive operations.
+    \item \textbf{Tooling:} Created tools for code editing and codebase snapshots.
+\end{itemize}
+
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Languages/Frameworks:} Python, Google Gemini API, FastAPI, MCP
+    \item \textbf{UI Tools:} Rich, prompt-toolkit, WebSockets
+\end{itemize}
+
+\vspace{8pt}
+
+% MemGallery
+\textbf{MemGallery | AI Memory Assistant for Android} \hfill \textbf{2025}\\
+\small\url{https://github.com/Past-da-king/MemGallery}
+
+\textit{Project Description:} 
+Built an Android app that captures and processes media to enable semantic search, making AI features available on all Android 7.0+ devices.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{Capture:} Built a system to detect and process screenshots automatically.
+    \item \textbf{Processing:} Integrated Gemini 2.5 Flash to extract events and notes from images and audio.
+    \item \textbf{Search:} Built a memory bank where users find items using natural language.
+    \item \textbf{Interface:} Built the UI using Material Design 3 and Jetpack Compose.
+\end{itemize}
+
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Mobile Stack:} Kotlin, Jetpack Compose, Hilt, Room Database
+    \item \textbf{System APIs:} WorkManager, ContentObservers, Google Generative AI SDK
+\end{itemize}
+
+\vspace{8pt}
+
+% Nexa
+\textbf{Nexa | Offline Communication Platform} \hfill \textbf{2025}\\
+\small\url{https://github.com/Past-da-king/rednexa}
+
+\textit{Project Description:} 
+Worked with a team to build a communication system for areas without internet. The app allows messaging through a peer-to-peer network.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{Networking:} Built a custom protocol for data transfer via Bluetooth and Wi-Fi Direct.
+    \item \textbf{Reliability:} Added logic for data deduplication and message delivery.
+    \item \textbf{Security:} Integrated Google Tink for end-to-end encryption of messages.
+    \item \textbf{Identity:} Created a local system for identity management without phone numbers.
+\end{itemize}
+
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Core Stack:} Kotlin, Google Nearby Connections, Google Tink, Jetpack Compose
+    \item \textbf{Data Management:} Room, Kotlinx Serialization
+\end{itemize}
+
+\vspace{8pt}
+
+% StudyInc
+\textbf{StudyInc | Collaborative Productivity Tool} \hfill \textbf{2025}\\
+\small\url{https://phaketsi.vercel.app/#projects}
+
+\textit{Project Description:} 
+Built a collaborative platform for study sessions. It includes real-time presence, timers, and analytics to help students track their work.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{Syncing:} Used Socket.io for chat and timer sync, and WebRTC for video calls.
+    \item \textbf{Desktop:} Used Electron to build features like overlays for timers and tasks.
+    \item \textbf{Analytics:} Built a dashboard using React and Tailwind CSS to show study habits.
+    \item \textbf{Backend:} Built a Node.js server with MongoDB and JWT authentication.
+\end{itemize}
+
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Tech Stack:} Node.js, Next.js, Electron, MongoDB, Socket.io, WebRTC
+    \item \textbf{Styling:} Tailwind CSS, shadcn/ui
+\end{itemize}
+
+\vspace{8pt}
+
+% Verilookie
+\textbf{Verilookie | Deepfake and AI Detection} \hfill \textbf{2025}\\
+\small\url{https://github.com/Maphuti-Shilabje/verilookie}
+
+\textit{Project Description:} 
+Built a web app to detect deepfakes and AI-generated media, combined with a learning platform.
+
+\textbf{Key Contributions:}
+\begin{itemize}
+    \item \textbf{Detection:} Integrated Hugging Face Vision Transformers and NVIDIA APIs for media analysis.
+    \item \textbf{Education:} Built a quiz system powered by Gemini API that generates questions based on user history.
+    \item \textbf{Optimization:} Used OpenCV for video frame sampling and Docker for containerization.
+\end{itemize}
+
+\textbf{Technologies Used:}
+\begin{itemize}
+    \item \textbf{Backend:} Python (FastAPI), PyTorch, OpenCV, Docker
+    \item \textbf{Frontend/AI:} React, Google Gemini API, Hugging Face Transformers
+\end{itemize}
+
+\vspace{10pt}
+
+% Awards & Achievements
+\section*{Awards \& Achievements}
+
+\begin{itemize}
+    \item \textbf{Winner | Entelect University Challenge 2025:} Recognized for technical problem-solving.
+    \item \textbf{2nd Place | Predictive Insights 2025 Hackathon:} Built a solution for data modeling.
+\end{itemize}
+
+\vspace{10pt}
+
+% Technical Skills
+\section*{Technical Skills}
+
+\textbf{Languages:} Java, Python, JavaScript, TypeScript, Kotlin, C\#, SQL, \LaTeX \\
+\textbf{Frameworks/Tools:} React, Next.js, FastAPI, Node.js, Jetpack Compose, Electron, MongoDB, Docker, Git \\
+\textbf{Specializations:} AI/LLM Integration, Distributed Systems, Full-Stack Mobile \& Web
+
+\end{document}

@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic-settings
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+python-dotenv
+google-cloud-storage
+pydantic[email]
+pandas
+openpyxl
+reportlab
+matplotlib
+seaborn
+psycopg2-binary
+werkzeug

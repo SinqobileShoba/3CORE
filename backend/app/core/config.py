@@ -1,0 +1,30 @@
+import os
+from pydantic_settings import BaseSettings
+from typing import List
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "Project Management Tool"
+    API_V1_STR: str = "/api/v1"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+    
+    # Database
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///../../pmt_app/pm_tool.db")
+    
+    # CORS
+    CORS_ORIGINS: List[str] = ["*"]  # In production, restrict this to your frontend domain
+    
+    # Google Cloud Storage
+    GCP_PROJECT_ID: str = os.getenv("GCP_PROJECT_ID", "custom-mix-428318-h3")
+    GCP_BUCKET_NAME: str = os.getenv("GCP_BUCKET_NAME", "stratedgestore")
+    # Path to the JSON key file
+    GOOGLE_APPLICATION_CREDENTIALS: str = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "gcp-credentials.json")
+
+    class Config:
+        case_sensitive = True
+        env_file = ".env"
+
+settings = Settings()
