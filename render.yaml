@@ -22,8 +22,10 @@ services:
         sync: false
       - key: B2_SECRET_ACCESS_KEY
         sync: false
+      # Set this once in the dashboard to your real frontend URL.
+      # sync:false means a redeploy / blueprint re-sync will NEVER overwrite it.
       - key: CORS_ORIGINS
-        value: https://3core-portal.onrender.com
+        sync: false
       - key: ADMIN_INITIAL_PASSWORD
         sync: false
       - key: SEED_PM_PASSWORD
@@ -43,5 +45,9 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      # Set this once in the dashboard to your real backend URL.
+      # sync:false means a redeploy / blueprint re-sync will NEVER overwrite it.
+      # NOTE: Vite bakes this in at BUILD time — after changing it you must
+      # trigger "Clear build cache & deploy" on the frontend for it to take effect.
       - key: VITE_API_URL
-        value: https://3core-api.onrender.com
+        sync: false
